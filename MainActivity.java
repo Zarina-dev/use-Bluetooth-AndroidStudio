@@ -79,16 +79,18 @@ public class MainActivity extends AppCompatActivity {
         name_bt.setText(getLocalBluetoothName());
 
 
-        BA = BluetoothAdapter.getDefaultAdapter();
+        BA = BluetoothAdapter.getDefaultAdapter();      /* local device Bluetooth adapter */
         if (BA == null) {
             Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        if (BA.isEnabled()) {
+        if (BA.isEnabled()) {                           /* local device Bluetooth adapter 사용 가능*/
             enable_bt.setChecked(true);
         }
 
+
+        /* local device의 Bluetooth 기능 enable 여부 */
         enable_bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {  // b == isChecked
@@ -99,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 
                         // 참조: https://codinghero.tistory.com/111
-
                         // BLUETOOTH_ADVERTISE permission 없음
                         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("블루투스에 대한 액세스가 필요합니다");
@@ -124,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        /* local device 를 다른 기기들이 검색할 수 있게끔 허용 : visible for 2 minitues*/
         visible_bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -158,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+        /* pairing된 다른 디바이스들의 목록을 표시*/
         search_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,14 +193,14 @@ public class MainActivity extends AppCompatActivity {
             // BLUETOOTH_ADVERTISE permission 있음
             Toast.makeText(MainActivity.this, "BLUETOOTH_ADVERTISE permission 확인!", Toast.LENGTH_SHORT).show();
         }
-        pairedDevices = BA.getBondedDevices();
+        pairedDevices = BA.getBondedDevices();     // get bonded(paired) device
 
           // paired된 블루투스 이름 리스트를 listView 목록록에 추가
        ArrayList list = new ArrayList();
         for (BluetoothDevice bt : pairedDevices) {
             list.add(bt.getName());
         }
-        Toast.makeText(this, "Showing Devices", Toast.LENGTH_SHORT).show(); // Showing paired?? Devices
+        Toast.makeText(this, "Showing Devices", Toast.LENGTH_SHORT).show();             // Showing paired Devices
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, list);
         listView.setAdapter(adapter);
     }
